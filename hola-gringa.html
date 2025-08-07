@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hola Gringa - Miami Style</title>
+<style>
+  /* Reset */
+  * {
+    box-sizing: border-box;
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  body {
+    background: #0a0a0a;
+    color: #eee;
+  }
+  header {
+    background: #1a1a1a;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid #ff00ff; /* neón fucsia */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  header h1 {
+    color: #ff00ff;
+    font-weight: 900;
+    letter-spacing: 3px;
+    font-size: 1.8rem;
+    cursor: default;
+  }
+  nav a {
+    color: #0ff; /* neón cyan */
+    margin-left: 20px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+  }
+  nav a:hover {
+    color: #ff0; /* neón amarillo */
+  }
+  main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  section {
+    margin-bottom: 60px;
+  }
+  section h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #ff0080; /* rosa neón */
+    border-bottom: 3px solid #ff0080;
+    padding-bottom: 5px;
+  }
+  .products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 20px;
+  }
+  .product {
+    background: #121212;
+    border: 2px solid #0ff;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    transition: border-color 0.3s ease;
+  }
+  .product:hover {
+    border-color: #ff00ff;
+  }
+  .product img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  .product h3 {
+    margin-bottom: 8px;
+    color: #0ff;
+  }
+  .product p.price {
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #ff0;
+  }
+  select {
+    margin: 5px 0 12px;
+    width: 100%;
+    padding: 6px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    color: #000;
+  }
+  button.add-to-cart {
+    background: #ff00ff;
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+  }
+  button.add-to-cart:hover {
+    background: #ff55ff;
+  }
+
+  /* Carrito */
+  #cart {
+    position: fixed;
+    right: 20px;
+    top: 80px;
+    background: #1a1a1a;
+    width: 320px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border: 3px solid #ff00ff;
+    border-radius: 10px;
+    padding: 15px;
+    color: #eee;
+    z-index: 1100;
+  }
+  #cart h3 {
+    border-bottom: 2px solid #ff00ff;
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+    color: #ff00ff;
+  }
+  #cart-items {
+    list-style: none;
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+  }
+  #cart-items li {
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+    font-size: 0.9rem;
+  }
+  #cart-items li span {
+    font-weight: 700;
+    color: #0ff;
+  }
+  #cart-total {
+    font-weight: 900;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    color: #ff0;
+  }
+  #shipping-section {
+    margin-bottom: 12px;
+  }
+  #shipping-section label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #ff0080;
+  }
+  #shipping-cost {
+    font-weight: 700;
+    color: #ff0;
+    margin-top: 6px;
+  }
+  #calculate-shipping {
+    background: #ff0080;
+    border: none;
+    color: #fff;
+    padding: 8px 12px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+  }
+  #calculate-shipping:hover {
+    background: #ff55aa;
+  }
+  #checkout-btn {
+    background: #0ff;
+    border: none;
+    color: #000;
+    padding: 12px 15px;
+    font-weight: 900;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+  }
+  #checkout-btn:hover {
+    background: #55ffff;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    #cart {
+      position: static;
+      width: 100%;
+      max-height: none;
+      margin-top: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Hola Gringa</h1>
+  <nav>
+    <a href="#femenina">Hola Gringa (Mujeres)</a>
+    <a href="#hombres">Miami Style (Hombres)</a>
+    <a href="#ninos">Mini Style (Niños y Bebés)</a>
+  </nav>
+</header>
+
+<main>
+
+  <section id="femenina">
+    <h2>Hola Gringa - Moda Femenina</h2>
+    <div class="products">
+      <div class="product" data-name="Remera Neón Fucsia" data-price="2500">
+        <img src="https://i.ibb.co/YRsZvMw/remera-fucsia.jpg" alt="Remera Neón Fucsia" />
+        <h3>Remera Neón Fucsia</h3>
+        <p class="price">$2500</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Fucsia">Fucsia</option>
+          <option value="Rosa neón">Rosa neón</option>
+          <option value="Morado neón">Morado neón</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+
+      <div class="product" data-name="Vestido Neón Verde" data-price="4300">
+        <img src="https://i.ibb.co/6vNRT9S/vestido-verde.jpg" alt="Vestido Neón Verde" />
+        <h3>Vestido Neón Verde</h3>
+        <p class="price">$4300</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Verde">Verde</option>
+          <option value="Limón">Limón</option>
+          <option value="Amarillo neón">Amarillo neón</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="hombres">
+    <h2>Miami Style - Moda Masculina</h2>
+    <div class="products">
+      <div class="product" data-name="Remera Neón Azul" data-price="2600">
+        <img src="https://i.ibb.co/7Xk6r8d/remera-azul.jpg" alt="Remera Neón Azul" />
+        <h3>Remera Neón Azul</h3>
+        <p class="price">$2600</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Azul neón">Azul neón</option>
+          <option value="Celeste">Celeste</option>
+          <option value="Negro">Negro</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+
+      <div class="product" data-name="Camisa Neón Naranja" data-price="4900">
+        <img src="https://i.ibb.co/6ZF8hJb/camisa-naranja.jpg" alt="Camisa Neón Naranja" />
+        <h3>Camisa Neón Naranja</h3>
+        <p class="price">$4900</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Naranja">Naranja</option>
+          <option value="Amarillo">Amarillo</option>
+          <option value="Rojo neón">Rojo neón</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="ninos">
+    <h2>Mini Style - Niños y Bebés</h2>
+    <div class="products">
+      <div class="product" data-name="Body Neón Amarillo" data-price="1900">
+        <img src="https://i.ibb.co/JcmXq5L/body-amarillo.jpg" alt="Body Neón Amarillo" />
+        <h3>Body Neón Amarillo</h3>
+        <p class="price">$1900</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="0-3 meses">0-3 meses</option>
+          <option value="3-6 meses">3-6 meses</option>
+          <option value="6-12 meses">6-12 meses</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Amarillo">Amarillo</option>
+          <option value="Naranja">Naranja</option>
+          <option value="Verde neón">Verde neón</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+
+      <div class="product" data-name="Campera Neón Rosa" data-price="5200">
+        <img src="https://i.ibb.co/vQ9hwKc/campera-rosa.jpg" alt="Campera Neón Rosa" />
+        <h3>Campera Neón Rosa</h3>
+        <p class="price">$5200</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="1 año">1 año</option>
+          <option value="2 años">2 años</option>
+          <option value="3 años">3 años</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Rosa neón">Rosa neón</option>
+          <option value="Fucsia">Fucsia</option>
+          <option value="Lavanda">Lavanda</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Carrito -->
+<aside id="cart" aria-label="Carrito de compras">
+  <h3>Carrito de Compras</h3>
+  <ul id="cart-items" aria-live="polite"></ul>
+  <div id="cart-total">Total: $0</div>
+
+  <div id="shipping-section">
+    <label for="shipping-input">Código Postal para envío:</label>
+    <input type="text" id="shipping-input" placeholder="Ej: 1407" aria-label="Código Postal" />
+    <button id="calculate-shipping">Calcular envío</button>
+    <div id="shipping-cost"></div>
+  </div>
+
+  <button id="checkout-btn">Finalizar Compra</button>
+</aside>
+
+<script>
+  const cartItemsElem = document.getElementById('cart-items');
+  const cartTotalElem = document.getElementById('cart-total');
+  const shippingInput = document.getElementById('shipping-input');
+  const shippingCostElem = document.getElementById('shipping-cost');
+  const calculateShippingBtn = document.getElementById('calculate-shipping');
+  const checkoutBtn = document.getElementById('checkout-btn');
+
+  let cart = [];
+  let shippingCost = 0;
+
+  function updateCartDisplay() {
+    cartItemsElem.innerHTML = '';
+    let total = 0;
+    cart.forEach((item, index) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${item.name}</span><br/>
+        Talle: ${item.size}, Color: ${item.color} - $${item.price}
+        <button aria-label="Quitar ${item.name}" style="margin-left:10px; color:#f00; background:none; border:none; cursor:pointer;" onclick="removeFromCart(${index})">✖</button>
+      `;
+      cartItemsElem.appendChild(li);
+      total += item.price;
+    });
+    total += shippingCost;
+    cartTotalElem.textContent = `Total: $${total}`;
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCartDisplay();
+  }
+
+  document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', () => {
+      const productElem = button.closest('.product');
+      const name = productElem.getAttribute('data-name');
+      const price = Number(productElem.getAttribute('data-price'));
+      const sizeSelect = productElem.querySelector('.size-select');
+      const colorSelect = productElem.querySelector('.color-select');
+      const size = sizeSelect.value;
+      const color = colorSelect.value;
+
+      if (!size) {
+        alert('Por favor, selecciona un talle.');
+        return;
+      }
+      if (!color) {
+        alert('Por favor, selecciona un color.');
+        return;
+      }
+
+      cart.push({name, price, size, color});
+      updateCartDisplay();
+
+      // Reset selects
+      sizeSelect.selectedIndex = 0;
+      colorSelect.selectedIndex = 0;
+    });
+  });
+
+  calculateShippingBtn.addEventListener('click', () => {
+    const postalCode = shippingInput.value.trim();
+    if (!postalCode.match(/^\d{4,5}$/)) {
+      shippingCostElem.textContent = 'Ingresa un código postal válido (4 o 5 dígitos).';
+      shippingCostElem.style.color = '#f00';
+      return;
+    }
+    // Simulación básica: envíos según código postal
+    if (postalCode.startsWith('1')) {
+      shippingCost = 500;
+      shippingCostElem.textContent = 'Costo de envío: $500';
+      shippingCostElem.style.color = '#0f0';
+    } else if (postalCode.startsWith('4')) {
+      shippingCost = 700;
+      shippingCostElem.textContent = 'Costo de envío: $700';
+      shippingCostElem.style.color = '#0f0';
+    } else {
+      shippingCost = 1000;
+      shippingCostElem.textContent = 'Costo de envío: $1000';
+      shippingCostElem.style.color = '#0f0';
+    }
+    updateCartDisplay();
+  });
+
+  checkoutBtn.addEventListener('click', () => {
+    if (cart.length === 0) {
+      alert('Tu carrito está vacío.');
+      return;
+    }
+    if (shippingCost === 0) {
+      alert('Por favor, calcula el costo de envío antes de finalizar.');
+      return;
+    }
+    alert('Gracias por tu compra!\nTotal a pagar: $' + (cart.reduce((a,b)=>a+b.price,0) +<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hola Gringa - Miami Style</title>
+<style>
+  /* Reset */
+  * {
+    box-sizing: border-box;
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  body {
+    background: #0a0a0a;
+    color: #eee;
+  }
+  header {
+    background: #1a1a1a;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid #ff00ff; /* neón fucsia */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  header h1 {
+    color: #ff00ff;
+    font-weight: 900;
+    letter-spacing: 3px;
+    font-size: 1.8rem;
+    cursor: default;
+  }
+  nav a {
+    color: #0ff; /* neón cyan */
+    margin-left: 20px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+  }
+  nav a:hover {
+    color: #ff0; /* neón amarillo */
+  }
+  main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  section {
+    margin-bottom: 60px;
+  }
+  section h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #ff0080; /* rosa neón */
+    border-bottom: 3px solid #ff0080;
+    padding-bottom: 5px;
+  }
+  .products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 20px;
+  }
+  .product {
+    background: #121212;
+    border: 2px solid #0ff;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    transition: border-color 0.3s ease;
+  }
+  .product:hover {
+    border-color: #ff00ff;
+  }
+  .product img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  .product h3 {
+    margin-bottom: 8px;
+    color: #0ff;
+  }
+  .product p.price {
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #ff0;
+  }
+  select {
+    margin: 5px 0 12px;
+    width: 100%;
+    padding: 6px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    color: #000;
+  }
+  button.add-to-cart {
+    background: #ff00ff;
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+  }
+  button.add-to-cart:hover {
+    background: #ff55ff;
+  }
+
+  /* Carrito */
+  #cart {
+    position: fixed;
+    right: 20px;
+    top: 80px;
+    background: #1a1a1a;
+    width: 320px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border: 3px solid #ff00ff;
+    border-radius: 10px;
+    padding: 15px;
+    color: #eee;
+    z-index: 1100;
+  }
+  #cart h3 {
+    border-bottom: 2px solid #ff00ff;
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+    color: #ff00ff;
+  }
+  #cart-items {
+    list-style: none;
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+  }
+  #cart-items li {
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+    font-size: 0.9rem;
+  }
+  #cart-items li span {
+    font-weight: 700;
+    color: #0ff;
+  }
+  #cart-total {
+    font-weight: 900;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    color: #ff0;
+  }
+  #shipping-section {
+    margin-bottom: 12px;
+  }
+  #shipping-section label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #ff0080;
+  }
+  #shipping-cost {
+    font-weight: 700;
+    color: #ff0;
+    margin-top: 6px;
+  }
+  #calculate-shipping {
+    background: #ff0080;
+    border: none;
+    color: #fff;
+    padding: 8px 12px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+  }
+  #calculate-shipping:hover {
+    background: #ff55aa;
+  }
+  #checkout-btn {
+    background: #0ff;
+    border: none;
+    color: #000;
+    padding: 12px 15px;
+    font-weight: 900;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+  }
+  #checkout-btn:hover {
+    background: #55ffff;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    #cart {
+      position: static;
+      width: 100%;
+      max-height: none;
+      margin-top: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Hola Gringa</h1>
+  <nav>
+    <a href="#femenina">Hola Gringa (Mujeres)</a>
+    <a href="#hombres">Miami Style (Hombres)</a>
+    <a href="#ninos">Mini Style (Niños y Bebés)</a>
+  </nav>
+</header>
+
+<main>
+
+  <section id="femenina">
+    <h2>Hola Gringa - Moda Femenina</h2>
+    <div class="products">
+      <div class="product" data-name="Remera Neón Fucsia" data-price="2500">
+        <img src="https://i.ibb.co/YRsZvMw/remera-fucsia.jpg" alt="Remera Neón Fucsia" />
+        <h3>Remera Neón Fucsia</h3>
+        <p class="price">$2500</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Fucsia">Fucsia</option>
+          <option value="Rosa neón">Rosa neón</option>
+          <option value="Morado neón">Morado neón</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+
+      <div class="product" data-name="Vestido Neón Verde" data-price="4300">
+        <img src="https://i.ibb.co/6vNRT9S/vestido-verde.jpg" alt="Vestido Neón Verde" />
+        <h3>Vestido Neón Verde</h3>
+        <p class="price">$4300</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Verde">Verde</option>
+          <option value="Limón">Limón</option>
+          <option value="Amarillo neón">Amarillo neón</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="hombres">
+    <h2>Miami Style - Moda Masculina</h2>
+    <div class="products">
+      <div class="product" data-name="Remera Neón Azul" data-price="2600">
+        <img src="https://i.ibb.co/7Xk6r8d/remera-azul.jpg" alt="Remera Neón Azul" />
+        <h3>Remera Neón Azul</h3>
+        <p class="price">$2600</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Azul neón">Azul neón</option>
+          <option value="Celeste">Celeste</option>
+          <option value="Negro">Negro</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+
+      <div class="product" data-name="Camisa Neón Naranja" data-price="4900">
+        <img src="https://i.ibb.co/6ZF8hJb/camisa-naranja.jpg" alt="Camisa Neón Naranja" />
+        <h3>Camisa Neón Naranja</h3>
+        <p class="price">$4900</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Naranja">Naranja</option>
+          <option value="Amarillo">Amarillo</option>
+          <option value="Rojo neón">Rojo neón</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="ninos">
+    <h2>Mini Style - Niños y Bebés</h2>
+    <div class="products">
+      <div class="product" data-name="Body Neón Amarillo" data-price="1900">
+        <img src="https://i.ibb.co/JcmXq5L/body-amarillo.jpg" alt="Body Neón Amarillo" />
+        <h3>Body Neón Amarillo</h3>
+        <p class="price">$1900</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="0-3 meses">0-3 meses</option>
+          <option value="3-6 meses">3-6 meses</option>
+          <option value="6-12 meses">6-12 meses</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Amarillo">Amarillo</option>
+          <option value="Naranja">Naranja</option>
+          <option value="Verde neón">Verde neón</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+
+      <div class="product" data-name="Campera Neón Rosa" data-price="5200">
+        <img src="https://i.ibb.co/vQ9hwKc/campera-rosa.jpg" alt="Campera Neón Rosa" />
+        <h3>Campera Neón Rosa</h3>
+        <p class="price">$5200</p>
+        <select class="size-select" aria-label="Seleccionar talle">
+          <option value="" disabled selected>Talle</option>
+          <option value="1 año">1 año</option>
+          <option value="2 años">2 años</option>
+          <option value="3 años">3 años</option>
+        </select>
+        <select class="color-select" aria-label="Seleccionar color">
+          <option value="" disabled selected>Color</option>
+          <option value="Rosa neón">Rosa neón</option>
+          <option value="Fucsia">Fucsia</option>
+          <option value="Lavanda">Lavanda</option>
+        </select>
+        <button class="add-to-cart">Agregar al carrito</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Carrito -->
+<aside id="cart" aria-label="Carrito de compras">
+  <h3>Carrito de Compras</h3>
+  <ul id="cart-items" aria-live="polite"></ul>
+  <div id="cart-total">Total: $0</div>
+
+  <div id="shipping-section">
+    <label for="shipping-input">Código Postal para envío:</label>
+    <input type="text" id="shipping-input" placeholder="Ej: 1407" aria-label="Código Postal" />
+    <button id="calculate-shipping">Calcular envío</button>
+    <div id="shipping-cost"></div>
+  </div>
+
+  <button id="checkout-btn">Finalizar Compra</button>
+</aside>
+
+<script>
+  const cartItemsElem = document.getElementById('cart-items');
+  const cartTotalElem = document.getElementById('cart-total');
+  const shippingInput = document.getElementById('shipping-input');
+  const shippingCostElem = document.getElementById('shipping-cost');
+  const calculateShippingBtn = document.getElementById('calculate-shipping');
+  const checkoutBtn = document.getElementById('checkout-btn');
+
+  let cart = [];
+  let shippingCost = 0;
+
+  function updateCartDisplay() {
+    cartItemsElem.innerHTML = '';
+    let total = 0;
+    cart.forEach((item, index) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${item.name}</span><br/>
+        Talle: ${item.size}, Color: ${item.color} - $${item.price}
+        <button aria-label="Quitar ${item.name}" style="margin-left:10px; color:#f00; background:none; border:none; cursor:pointer;" onclick="removeFromCart(${index})">✖</button>
+      `;
+      cartItemsElem.appendChild(li);
+      total += item.price;
+    });
+    total += shippingCost;
+    cartTotalElem.textContent = `Total: $${total}`;
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCartDisplay();
+  }
+
+  document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', () => {
+      const productElem = button.closest('.product');
+      const name = productElem.getAttribute('data-name');
+      const price = Number(productElem.getAttribute('data-price'));
+      const sizeSelect = productElem.querySelector('.size-select');
+      const colorSelect = productElem.querySelector('.color-select');
+      const size = sizeSelect.value;
+      const color = colorSelect.value;
+
+      if (!size) {
+        alert('Por favor, selecciona un talle.');
+        return;
+      }
+      if (!color) {
+        alert('Por favor, selecciona un color.');
+        return;
+      }
+
+      cart.push({name, price, size, color});
+      updateCartDisplay();
+
+      // Reset selects
+      sizeSelect.selectedIndex = 0;
+      colorSelect.selectedIndex = 0;
+    });
+  });
+
+  calculateShippingBtn.addEventListener('click', () => {
+    const postalCode = shippingInput.value.trim();
+    if (!postalCode.match(/^\d{4,5}$/)) {
+      shippingCostElem.textContent = 'Ingresa un código postal válido (4 o 5 dígitos).';
+      shippingCostElem.style.color = '#f00';
+      return;
+    }
+    // Simulación básica: envíos según código postal
+    if (postalCode.startsWith('1')) {
+      shippingCost = 500;
+      shippingCostElem.textContent = 'Costo de envío: $500';
+      shippingCostElem.style.color = '#0f0';
+    } else if (postalCode.startsWith('4')) {
+      shippingCost = 700;
+      shippingCostElem.textContent = 'Costo de envío: $700';
+      shippingCostElem.style.color = '#0f0';
+    } else {
+      shippingCost = 1000;
+      shippingCostElem.textContent = 'Costo de envío: $1000';
+      shippingCostElem.style.color = '#0f0';
+    }
+    updateCartDisplay();
+  });
+
+  checkoutBtn.addEventListener('click', () => {
+    if (cart.length === 0) {
+      alert('Tu carrito está vacío.');
+      return;
+    }
+    if (shippingCost === 0) {
+      alert('Por favor, calcula el costo de envío antes de finalizar.');
+      return;
+    }
+    alert('Gracias por tu compra!\nTotal a pagar: $' + (cart.reduce((a,b)=>a+b.price,0) +
